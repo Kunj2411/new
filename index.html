@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy 43rd Birthday — Papa</title>
+  <meta name="description" content="A soft, elegant Ghibli-inspired birthday microsite with gallery, letter to Papa, and a refined balloon pop mini-game." />
+  <style>
+    :root{
+      --bg-1: #f6f3ef;
+      --bg-2: #e8f3ff;
+      --ink: #1f1f2b;
+      --muted: #6b6f85;
+      --accent: #7d9cff; /* soft periwinkle */
+      --rose: #ff8fb1;
+      --card: rgba(255,255,255,0.9);
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 12px 30px rgba(31,31,41,.08);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: Inter, Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color:var(--ink);
+      background: linear-gradient(180deg,var(--bg-1), #fff);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{max-width:1100px;margin:28px auto;padding:28px}
+
+    /* HERO */
+    header.hero{display:grid;grid-template-columns:1fr;gap:18px;align-items:center;padding:44px;border-radius:20px;background:linear-gradient(180deg,#fcfbff,#eef6ff);box-shadow:var(--shadow)}
+    .hero-top{display:flex;align-items:center;gap:18px}
+    .badge{padding:8px 12px;border-radius:12px;background:linear-gradient(90deg,#fff,#f6f8ff);font-weight:700;color:var(--muted);box-shadow:0 6px 18px rgba(20,20,40,.04)}
+    h1{font-size:clamp(28px,4.4vw,44px);margin:0;line-height:1.02}
+    p.lead{margin:0;color:var(--muted);max-width:70ch;font-size:1.05rem}
+
+    /* Gallery */
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:22px}
+    figure.card{margin:0;border-radius:14px;overflow:hidden;background:var(--card);box-shadow:var(--shadow);position:relative}
+    figure.card img{display:block;width:100%;height:220px;object-fit:cover;transition:transform .5s ease}
+    figure.card:hover img{transform:scale(1.06)}
+
+    /* controls */
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:0;background:linear-gradient(90deg,var(--accent),#8ec1ff);color:white;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(125,156,255,.15);transition:transform .12s ease}
+    .btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(30,30,40,.06);box-shadow:none}
+
+    /* message */
+    .letter{margin-top:28px;padding:28px;border-radius:14px;background:linear-gradient(180deg,#ffffff,#fff9f6);box-shadow:var(--shadow)}
+    .letter h2{margin:0 0 8px}
+    .letter p{margin:0;color:var(--muted);line-height:1.65}
+
+    /* Game */
+    .gameWrap{margin-top:28px;border-radius:14px;padding:18px;background:linear-gradient(180deg,#ffffff,#f4fcff);box-shadow:var(--shadow)}
+    .hud{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px}
+    .hud .pill{background:#ffffffaa;padding:8px 12px;border-radius:999px;font-weight:700;color:var(--muted)}
+    .playfield{position:relative;height:380px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#dff4ff,#ffffff);border:1px solid rgba(0,0,0,.03)}
+    .p-balloon{position:absolute;width:54px;height:72px;border-radius:50% 50% 45% 45%/60% 60% 40% 40%;box-shadow:inset 0 -8px 0 rgba(255,255,255,.35);cursor:pointer;display:flex;align-items:flex-end;justify-content:center}
+    .p-balloon::after{content:'';position:absolute;left:50%;top:70px;width:2px;height:40px;background:#6b6b6b;transform:translateX(-50%)}
+
+    /* overlay */
+    .overlay{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(0deg,rgba(12,14,20,.4),rgba(12,14,20,.4));backdrop-filter:blur(4px);visibility:hidden;opacity:0;transition:opacity .2s ease,visibility .2s}
+    .overlay.show{visibility:visible;opacity:1}
+    .modal{background:white;padding:22px;border-radius:12px;max-width:420px;box-shadow:0 20px 50px rgba(20,20,60,.18);text-align:center}
+
+    footer{margin-top:28px;color:var(--muted);text-align:center;font-size:14px}
+
+    @media (min-width:900px){
+      header.hero{grid-template-columns:1fr 420px}
+      .hero-top{flex-direction:column;align-items:flex-start}
+      figure.card img{height:260px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero" aria-label="Birthday hero">
+      <div>
+        <div class="hero-top">
+          <span class="badge">Happy 43rd • Papa</span>
+          <h1>🌸 Happy 43rd Birthday, Papa 🌸</h1>
+        </div>
+        <p class="lead">In the quiet, steady way you move through life, you've given us roots and wings. Your gentleness, patience, and quiet humor make every ordinary day feel like a little storybook adventure. Today we celebrate you — your laughter, your guidance, your warm presence. May the coming year be filled with soft skies, good health, and simple joys that remind you how loved you are.</p>
+
+        <div class="controls" style="margin-top:18px">
+          <button class="btn" id="btnUploadMusic">Upload & Play Music</button>
+          <button class="btn ghost" id="btnToggleLights">Toggle Lights</button>
+          <button class="btn" id="btnFly">Fly Balloons</button>
+          <button class="btn" id="btnOpenLetter">Open Letter</button>
+        </div>
+
+      </div>
+
+      <!-- Side preview: a soft framed placeholder (keeps layout balanced) -->
+      <div style="display:grid;grid-template-rows:1fr auto;gap:12px">
+        <figure class="card" style="padding:14px;display:flex;align-items:center;justify-content:center">
+          <img src="ghibli1.jpg" alt="Ghibli art" style="height:200px;width:100%;object-fit:cover;border-radius:10px" loading="lazy">
+        </figure>
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost" id="btnStartGame" style="flex:1">🎮 Enjoy the Day</button>
+          <button class="btn" id="btnUploadImages" style="flex:1">📷 Upload Photos</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Gallery: user images will show here -->
+    <section aria-label="Gallery" style="margin-top:18px">
+      <div class="gallery" id="gallery">
+        <figure class="card"><img src="ghibli1.jpg" alt="Art 1" loading="lazy"></figure>
+        <figure class="card"><img src="ghibli2.jpg" alt="Art 2" loading="lazy"></figure>
+        <figure class="card"><img src="ghibli3.jpg" alt="Art 3" loading="lazy"></figure>
+        <figure class="card"><img src="ghibli4.jpg" alt="Art 4" loading="lazy"></figure>
+        <figure class="card"><img src="ghibli5.jpg" alt="Art 5" loading="lazy"></figure>
+        <figure class="card"><img src="ghibli6.jpg" alt="Art 6" loading="lazy"></figure>
+      </div>
+    </section>
+
+    <!-- Letter to Papa -->
+    <section class="letter" id="letter" aria-label="Letter to Papa" style="display:none">
+      <h2>A Letter to Papa</h2>
+      <p>Dear Papa —
+      <br><br>
+      Your kindness is the quiet map we follow. You teach us by example: to be patient, to laugh when things are small and strange, and to carry one another through ordinary days. I hope this year returns a fraction of the warmth you've given us. May your mornings be gentle, your evenings peaceful, and your heart full of the little wonders that make life rich. We love you — today and always.</p>
+    </section>
+
+    <!-- Game -->
+    <section class="gameWrap" aria-label="Balloon pop game">
+      <div class="hud">
+        <div class="pill">Score: <strong id="score">0</strong></div>
+        <div class="pill">Time: <strong id="time">30</strong>s</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" id="startRound">Start</button>
+          <button class="btn ghost" id="stopRound">Stop</button>
+        </div>
+      </div>
+      <div class="playfield" id="playfield" role="application" aria-label="Balloon pop playfield"></div>
+    </section>
+
+    <footer>
+      Tip: Click any image to enlarge it locally. Upload your six Ghibli images or replace the filenames (ghibli1.jpg ... ghibli6.jpg) in the same folder as this HTML.
+    </footer>
+  </main>
+
+  <!-- Hidden inputs -->
+  <input id="musicInput" type="file" accept="audio/*" style="display:none">
+  <input id="imagesInput" type="file" accept="image/*" multiple style="display:none">
+
+  <!-- Overlay for end-of-round -->
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modal">
+      <h3 id="modalTitle">Round Over</h3>
+      <p id="modalBody">Great job!</p>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+        <button class="btn" id="btnCloseModal">Close</button>
+        <button class="btn ghost" id="btnPlayAgain">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="bgm" preload="auto"></audio>
+
+  <script>
+    // Elements
+    const btnUploadMusic = document.getElementById('btnUploadMusic');
+    const musicInput = document.getElementById('musicInput');
+    const bgm = document.getElementById('bgm');
+
+    const btnToggleLights = document.getElementById('btnToggleLights');
+    const btnFly = document.getElementById('btnFly');
+    const btnOpenLetter = document.getElementById('btnOpenLetter');
+
+    const btnUploadImages = document.getElementById('btnUploadImages');
+    const imagesInput = document.getElementById('imagesInput');
+    const gallery = document.getElementById('gallery');
+
+    const btnStartGame = document.getElementById('btnStartGame');
+    const startRound = document.getElementById('startRound');
+    const stopRound = document.getElementById('stopRound');
+    const playfield = document.getElementById('playfield');
+    const scoreEl = document.getElementById('score');
+    const timeEl = document.getElementById('time');
+
+    const overlay = document.getElementById('overlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnPlayAgain = document.getElementById('btnPlayAgain');
+
+    const letter = document.getElementById('letter');
+
+    // Audio / sound setup
+    let audioCtx = null;
+    let popGain = null;
+    function ensureAudioContext(){
+      if(!audioCtx){
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        popGain = audioCtx.createGain();
+        popGain.connect(audioCtx.destination);
+        popGain.gain.value = 0.5;
+      }
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function popSound(){
+      try{
+        ensureAudioContext();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = 'triangle';
+        o.frequency.value = 700 + Math.random()*220;
+        g.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.5, audioCtx.currentTime + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.18);
+        o.connect(g); g.connect(popGain);
+        o.start(); o.stop(audioCtx.currentTime + 0.19);
+      }catch(e){ /* audio might be blocked */ }
+    }
+
+    // Music upload & play
+    btnUploadMusic.addEventListener('click', ()=> musicInput.click());
+    musicInput.addEventListener('change', (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      bgm.src = URL.createObjectURL(file);
+      bgm.loop = true;
+      bgm.play().catch(()=>{}); // user gesture already
+      try{ ensureAudioContext(); }catch(e){}
+    });
+
+    // Lights toggle
+    let lightsOn = true;
+    btnToggleLights.addEventListener('click', ()=>{
+      lightsOn = !lightsOn;
+      document.body.style.background = lightsOn ? 'linear-gradient(180deg,var(--bg-1), #fff)' : 'linear-gradient(180deg,#0b1020,#081020)';
+      document.body.style.color = lightsOn ? 'var(--ink)' : '#dfe8ff';
+    });
+
+    // Fly decorative balloons in header
+    btnFly.addEventListener('click', ()=>{
+      for(let i=0;i<8;i++) setTimeout(()=> spawnDecorBalloon(), i*120);
+    });
+
+    function spawnDecorBalloon(){
+      const root = document.querySelector('.hero');
+      const b = document.createElement('div');
+      b.className = 'p-balloon';
+      const colors = ['#ff9bb3','#9db4ff','#9be7c4','#ffd27a','#b8f0ff'];
+      b.style.background = colors[Math.floor(Math.random()*colors.length)];
+      const width = root.clientWidth;
+      const x = Math.random()*(width-60);
+      b.style.left = x + 'px';
+      b.style.bottom = '-120px';
+      root.appendChild(b);
+      const dist = root.clientHeight + 260;
+      const dur = 4200 + Math.random()*2600;
+      const anim = b.animate([{transform:'translateY(0)'},{transform:`translateY(-${dist}px)`}],{duration:dur,easing:'cubic-bezier(.2,.7,.3,1)',fill:'forwards'});
+      anim.finished.then(()=> b.remove());
+    }
+
+    // Open/close letter
+    btnOpenLetter.addEventListener('click', ()=>{ letter.style.display = letter.style.display === 'none' ? 'block' : 'none'; letter.scrollIntoView({behavior:'smooth'}); });
+
+    // Gallery upload
+    btnUploadImages.addEventListener('click', ()=> imagesInput.click());
+    imagesInput.addEventListener('change', (e)=>{
+      const files = Array.from(e.target.files).slice(0,12);
+      if(files.length===0) return;
+      gallery.innerHTML = '';
+      files.forEach(f=>{
+        const url = URL.createObjectURL(f);
+        const fig = document.createElement('figure'); fig.className='card';
+        const img = document.createElement('img'); img.src = url; img.alt = f.name; img.loading='lazy';
+        fig.appendChild(img); gallery.appendChild(fig);
+      });
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+
+    // Lightbox for images (simple)
+    gallery.addEventListener('click', (e)=>{
+      const img = e.target.closest('img');
+      if(!img) return;
+      const overlayLarge = document.createElement('div');
+      overlayLarge.style.position='fixed'; overlayLarge.style.inset=0; overlayLarge.style.background='rgba(12,14,20,.7)'; overlayLarge.style.display='grid'; overlayLarge.style.placeItems='center'; overlayLarge.style.zIndex=9999;
+      const copy = img.cloneNode(); copy.style.maxWidth='88vw'; copy.style.maxHeight='88vh'; copy.style.borderRadius='10px'; overlayLarge.appendChild(copy);
+      overlayLarge.addEventListener('click', ()=> overlayLarge.remove()); document.body.appendChild(overlayLarge);
+    });
+
+    // ---- Game logic ----
+    let score = 0; let timeLeft = 30; let spawnTimer = null; let countdownTimer = null; let running = false;
+
+    function resetGame(){ score = 0; timeLeft = 30; scoreEl(); timeEl(); playfield.innerHTML=''; }
+    function scoreEl(){ scoreEl = document.getElementById('score'); if(scoreEl) scoreEl.textContent = score; }
+    function timeEl(){ const t = document.getElementById('time'); if(t) t.textContent = timeLeft; }
+
+    function startGameRound(){
+      if(running) return;
+      // resume audio context on first user action
+      try{ ensureAudioContext(); }catch(e){}
+
+      running = true; resetGame();
+      // spawn balloons
+      spawnTimer = setInterval(()=> spawnBalloon(playfield), 750);
+      countdownTimer = setInterval(()=>{
+        timeLeft--; timeEl();
+        if(timeLeft<=0) endRound();
+      },1000);
+    }
+
+    function endRound(){
+      running = false; clearInterval(spawnTimer); clearInterval(countdownTimer); spawnTimer=null; countdownTimer=null;
+      // show modal with score
+      modalTitle.textContent = 'Round Over';
+      modalBody.textContent = `Lovely! You scored ${score} pop${score===1?'':'s'}.`;
+      overlay.classList.add('show');
+    }
+
+    function stopGameRound(){ if(!running) return; running=false; clearInterval(spawnTimer); clearInterval(countdownTimer); spawnTimer=null; countdownTimer=null; }
+
+    document.getElementById('startRound').addEventListener('click', startGameRound);
+    document.getElementById('stopRound').addEventListener('click', stopGameRound);
+    btnStartGame.addEventListener('click', ()=>{ window.scrollTo({top:document.querySelector('.gameWrap').offsetTop-20,behavior:'smooth'}); startGameRound(); });
+
+    btnCloseModal.addEventListener('click', ()=> overlay.classList.remove('show'));
+    btnPlayAgain.addEventListener('click', ()=>{ overlay.classList.remove('show'); resetGame(); startGameRound(); });
+
+    function spawnBalloon(container){
+      const b = document.createElement('div'); b.className='p-balloon';
+      const colors = ['#ff9bb3','#9db4ff','#9be7c4','#ffd27a','#c8a7ff'];
+      b.style.background = colors[Math.floor(Math.random()*colors.length)];
+      // random horizontal position
+      const w = container.clientWidth; const x = Math.random()*(Math.max(0,w-60)); b.style.left = x + 'px';
+      // start below
+      b.style.transform = 'translateY(120%)';
+      container.appendChild(b);
+
+      const dist = container.clientHeight + 240;
+      const dur = 3000 + Math.random()*3400;
+      // animate upward
+      const anim = b.animate([
+        { transform: 'translateY(120%)', opacity:1 },
+        { transform: `translateY(-${dist}px)`, opacity:1 }
+      ], { duration: dur, easing: 'cubic-bezier(.22,.7,.3,1)' });
+
+      // click to pop
+      const onPop = (ev)=>{
+        ev.stopPropagation();
+        if(!running && timeLeft<=0) return;
+        score++; scoreEl();
+        popSound();
+        anim.cancel();
+        // pop animation
+        b.animate([{transform:'scale(1)'},{transform:'scale(.2)',opacity:0}],{duration:220,easing:'ease-out',fill:'forwards'}).onfinish = ()=> b.remove();
+      };
+      b.addEventListener('click', onPop);
+
+      anim.onfinish = ()=> b.remove();
+    }
+
+    // expose initial UI values
+    resetGame();
+
+    // keyboard shortcuts: M to toggle music, L to toggle lights
+    document.addEventListener('keydown',(e)=>{
+      if(e.key.toLowerCase()==='m'){ if(!bgm.src) musicInput.click(); else if(bgm.paused) bgm.play().catch(()=>{}); else bgm.pause(); }
+      if(e.key.toLowerCase()==='l'){ btnToggleLights.click(); }
+    });
+
+  </script>
+</body>
+</html>
